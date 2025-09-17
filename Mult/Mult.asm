@@ -7,3 +7,32 @@
 // (R0, R1, R2 refer to RAM[0], RAM[1], and RAM[2], respectively.)
 
 // Put your code here.
+
+@R0
+M=0
+
+// check if either R1 or R2 is zero
+@R1
+D=M
+@END
+D;JEQ
+
+@R2
+D=M
+@END
+D;JEQ
+
+(MULTIPLY)
+    @R2
+    D=M
+    @R0
+    M=M+D
+    @R1
+    M=M-1
+    D=M
+    @MULTIPLY
+    D;JGT
+
+(END)
+    @END // jump forever
+    0;JMP

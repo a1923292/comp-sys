@@ -11,5 +11,3 @@ repeat 100 {
 }
 set RAM[1] -22,  // Restore arguments in case program used them
 output;        // Output to file
-
-// expected: 22
