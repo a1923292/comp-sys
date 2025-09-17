@@ -3,13 +3,13 @@
 
 // Put your code here.
 @R1
-D=R1
+D=M
 
 @R2
-D=D+R2
+D=D+M
 
 @R3
-D=D-R3
+D=D-M
 
 @R0
-R0=D
+M=D
