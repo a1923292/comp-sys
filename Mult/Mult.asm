@@ -10,6 +10,8 @@
 
 @R0
 M=0
+@R3
+M=0 // used for sign flag (0+,1-)
 
 // check if either R1 or R2 is zero
 @R1
@@ -22,7 +24,40 @@ D=M
 @END
 D;JEQ
 
+@R1
+D=M
+@NEGR1
+D;JLT 
+
+(CHECK_R2)
+    @R2
+    D=M
+    @NEG_R2
+    D;JLT         // if R2 < 0, negate and flip sign
+    @MULTIPLY
+    0;JMP
+
+(NEG_R1)
+    @R1
+    M=-M        
+    @R3
+    M=M + 1     
+    @CHECK_R2
+    0;JMP
+
+(NEG_R2)
+    @R2
+    M=-M
+    @R3
+    M=M + 1     
+    @MULTIPLY
+    0;JMP
+
 (MULTIPLY)
+    @R1
+    D=M
+    @LOOP_END
+    D;JEQ
     @R2
     D=M
     @R0
@@ -32,6 +67,14 @@ D;JEQ
     D=M
     @MULTIPLY
     D;JGT
+
+(LOOP_END)
+    @R3
+    D=M
+    @END
+    D;JEQ         // if sign == 0, done
+    @R0
+    M=-M 
 
 (END)
     @END // jump forever
