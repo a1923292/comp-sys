@@ -1,6 +1,6 @@
 load Abs.asm,
 output-file Abs01.out,
-compare-to Abs00.cmp,
+compare-to Abs01.cmp,
 output-list RAM[0]%D RAM[1]%D;
 
 set PC 0,
