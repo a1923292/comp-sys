@@ -12,28 +12,28 @@ D;JLE
 
 @R1
 D=M
-@R6
+@R8
 M=D
 
 @R2
 D=M
-@R5
-M=D
-
-@0
-D=A
 @R3
 M=D
 
 (OUTER_LOOP)
     @R3
+    M=M-1
     D=M
-    @R5
-    D=D-M
     @1
-    D=D+A
+    D=D-A
     @DONE
-    D;JGE
+    D;JLE
+
+    // Set swap flag to false
+    @0
+    D=A
+    @R7
+    M=D
 
     @0
     D=A
@@ -43,55 +43,56 @@ M=D
     (INNER_LOOP)
         @R4
         D=M
-        @R5
-        D=M-D
         @R3
         D=D-M
         @1
         D=D-A
         @END_INNER
-        D;JLE
+        D;JGE
 
-        @R6
+        @R8
         D=M
         @R4
         A=D+M
         D=M
-        @R7
+        @R5
         M=D
 
-        @R6
+        @R8
         D=M
         @R4
         A=D+M
         A=A+1
         D=M
-        @R8
+        @R6
         M=D
 
-        @R7
+        @R5
         D=M
-        @R8
+        @R6
         D=D-M
         @NOSWAP
         D;JLE
 
-        @R8
-        D=M
         @R6
+        D=M
+        @R8
         A=M
         @R4
         A=A+M
         M=D
 
-        @R7
+        @R5
         D=M
-        @R6
+        @R8
         A=M
         @R4
         A=A+M
         A=A+1
         M=D
+
+        @R7
+        M=1
 
 (NOSWAP)
     @R4
@@ -100,8 +101,11 @@ M=D
     0;JMP
 
 (END_INNER)
-    @R3
-    M=M+1
+    @R7
+    D=M
+    @DONE
+    D;JEQ
+
     @OUTER_LOOP
     0;JMP
 
