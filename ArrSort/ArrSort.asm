@@ -3,115 +3,113 @@
 
 // Put your code here.
 
-@R2
-D=M
-@1
-D=D-A
-@DONE
-D;JLE
-
 @R1
 D=M
-@R8
+@base_address
 M=D
 
 @R2
 D=M
-@R3
+@length
 M=D
 
+@i
+M=0
+
 (OUTER_LOOP)
-    @R3
-    M=M-1
+    @i
     D=M
-    @1
+    @length
+    A=M
     D=D-A
-    @DONE
-    D;JLE
+    @END
+    D;JGE
 
-    // Set swap flag to false
-    @0
+    @i
+    D=M
+    @base_address
+    A=M+D
     D=A
-    @R7
+    @min_index
     M=D
 
-    @0
-    D=A
-    @R4
+    @i
+    D=M
+    D=D+1
+    @j
     M=D
 
-    (INNER_LOOP)
-        @R4
-        D=M
-        @R3
-        D=D-M
-        @1
-        D=D-A
-        @END_INNER
-        D;JGE
+(INNER_LOOP)
+    @j
+    D=M
+    @length
+    A=M
+    D=D-A
+    @SWAP
+    D;JGE
 
-        @R8
-        D=M
-        @R4
-        A=D+M
-        D=M
-        @R5
-        M=D
+    @base_address
+    D=M
+    @j
+    A=D+M
+    D=M
+    @min_index
+    A=M
+    D=D-M
+    @UPDATE_MIN_INDEX
+    D;JLT
 
-        @R8
-        D=M
-        @R4
-        A=D+M
-        A=A+1
-        D=M
-        @R6
-        M=D
-
-        @R5
-        D=M
-        @R6
-        D=D-M
-        @NOSWAP
-        D;JLE
-
-        @R6
-        D=M
-        @R8
-        A=M
-        @R4
-        A=A+M
-        M=D
-
-        @R5
-        D=M
-        @R8
-        A=M
-        @R4
-        A=A+M
-        A=A+1
-        M=D
-
-        @R7
-        M=1
-
-(NOSWAP)
-    @R4
+(INCREMENT_J)
+    @j
     M=M+1
     @INNER_LOOP
     0;JMP
 
-(END_INNER)
-    @R7
-    D=M
-    @DONE
-    D;JEQ
 
+(UPDATE_MIN_INDEX)
+    @base_address
+    D=M
+    @j
+    A=D+M
+    D=A
+    @min_index
+    M=D
+    @INCREMENT_J
+    0;JMP
+
+(SWAP)
+    @base_address
+    D=M
+    @i
+    A=D+M
+    D=M
+    @temp_val
+    M=D
+
+    @min_index
+    A=M
+    D=M
+
+    @base_address
+    A=M
+    @i
+    A=A+M
+    M=D
+
+    @min_index
+    A=M
+    @temp_val
+    D=M
+    M=D
+
+    @i
+    M=M+1
     @OUTER_LOOP
     0;JMP
 
-(DONE)
+
+(END)
     @R0
     M=-1
-    @DONE
+    @END
     0;JMP
-    // this does not work at all brother , just furkcffffccccfcfcfuckcccc
