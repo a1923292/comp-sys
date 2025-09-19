@@ -1,115 +1,126 @@
-// Sorts the array of length R2 whose first element is at RAM[R1] in ascending order in place. Sets R0 to True (-1) when complete.
-// (R0, R1, R2 refer to RAM[0], RAM[1], and RAM[2], respectively.)
-
-// Put your code here.
+@0
+D=A
+M=D
 
 @R1
 D=M
-@base_address
+@BASE
 M=D
 
 @R2
 D=M
-@length
+@LEN
 M=D
 
-@i
-M=0
+@0
+D=A
+@I
+M=D
 
 (OUTER_LOOP)
-    @i
+    @LEN
     D=M
-    @length
-    A=M
-    D=D-A
-    @END
-    D;JGE
+    @I
+    D=D-M
+    @DONE
+    D;JLE
 
-    @i
-    D=M
-    @base_address
-    A=M+D
+    @0
     D=A
-    @min_index
-    M=D
-
-    @i
-    D=M
-    D=D+1
-    @j
+    @J
     M=D
 
 (INNER_LOOP)
-    @j
+    @LEN
     D=M
-    @length
-    A=M
-    D=D-A
-    @SWAP
-    D;JGE
-
-    @base_address
-    D=M
-    @j
-    A=D+M
-    D=M
-    @min_index
-    A=M
+    @I
     D=D-M
-    @UPDATE_MIN_INDEX
-    D;JLT
+    @ONE
+    D=D-1
+    @J
+    D=D-M
+    @END_INNER
+    D;JLE
 
-(INCREMENT_J)
-    @j
+    @BASE
+    D=M
+    @J
+    D=D+M
+    @ADDR
+    M=D
+
+    @ADDR
+    A=M
+    D=M
+    @R6
+    M=D
+
+    @ADDR
+    D=M+1
+    @ADDR1
+    M=D
+
+    @ADDR1
+    A=M
+    D=M
+    @R7
+    M=D
+
+    @R6
+    D=M
+    @R7
+    D=D-M
+    @NO_SWAP
+    D;JLE
+
+    @R6
+    D=M
+    @ADDR1
+    A=M
+    M=D
+
+    @R7
+    D=M
+    @ADDR
+    A=M
+    M=D
+
+(NO_SWAP)
+    @J
     M=M+1
     @INNER_LOOP
     0;JMP
 
-
-(UPDATE_MIN_INDEX)
-    @base_address
-    D=M
-    @j
-    A=D+M
-    D=A
-    @min_index
-    M=D
-    @INCREMENT_J
-    0;JMP
-
-(SWAP)
-    @base_address
-    D=M
-    @i
-    A=D+M
-    D=M
-    @temp_val
-    M=D
-
-    @min_index
-    A=M
-    D=M
-
-    @base_address
-    A=M
-    @i
-    A=A+M
-    M=D
-
-    @min_index
-    A=M
-    @temp_val
-    D=M
-    M=D
-
-    @i
+(END_INNER)
+    @I
     M=M+1
     @OUTER_LOOP
     0;JMP
 
-
-(END)
+(DONE)
     @R0
     M=-1
+
     @END
     0;JMP
+
+(BASE)  
+@0
+(LEN)   
+@0
+(I)     
+@0
+(J)     
+@0
+(ADDR)  
+@0
+(ADDR1) 
+@0
+(R6)    
+@0
+(R7)    
+@0
+(ONE)   
+@1
+(END)   
+@END
