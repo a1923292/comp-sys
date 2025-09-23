@@ -70,10 +70,11 @@ M=D
     M=D
 
     @ADDR
-    D=M+1
+    D=M
+    @ONE
+    D=D+A
     @ADDR1
     M=D
-
     @ADDR1
     A=M
     D=M
@@ -130,27 +131,15 @@ M=D
     @END
     0;JMP
 
-(BASE)  
-@0
-(LEN)   
-@0
-(I)     
-@0
-(J)     
-@0
-(ADDR)  
-@0
-(ADDR1) 
-@0
-(R6)    
-@0
-(R7)    
-@0
-(ONE)   
-@1
-(LIMIT) 
-@0
-(SWAPFLAG)
-@0
-(END)   
-@END
+(BASE)      @0
+(LEN)       @0
+(I)         @0
+(J)         @0
+(ADDR)      @0
+(ADDR1)     @0
+(R6)        @0
+(R7)        @0
+(ONE)       @1
+(LIMIT)     @0
+(SWAPFLAG)  @0
+(END)       @END
