@@ -1,5 +1,9 @@
 
-// Load base and limit
+@R2
+D=M
+@DONE
+D;JLE
+
 @R1
 D=M
 @BASE
@@ -7,7 +11,7 @@ M=D
 
 @R2
 D=M
-@LIMIT
+@LEN
 M=D
 
 @0
@@ -15,10 +19,17 @@ D=A
 @SWAPFLAG
 M=D
 
-(OUTER)
-    @LIMIT
+@0
+D=A
+@I
+M=D
+
+(OUTER_LOOP)
+    @LEN
     D=M
-    D=D-1
+    @I
+    D=D-M
+    D=D+1
     @DONE
     D;JLE
 
@@ -26,16 +37,20 @@ M=D
     D=A
     @J
     M=D
+
     @0
     D=A
     @SWAPFLAG
     M=D
 
-(INNER)
-    @J
+(INNER_LOOP)
+    @LEN
     D=M
-    @LIMIT
+    @I
     D=D-M
+    @J
+    D=D-M
+    @ONE
     D=D-1
     @ENDINNER
     D;JLE
@@ -51,8 +66,7 @@ M=D
     @BASE
     D=M
     @J
-    A=D+M
-    A=A+1
+    A=D+M+1
     D=M
     @R7
     M=D
@@ -70,7 +84,6 @@ M=D
     D=M
     @J
     A=D+M
-
     @R7
     D=M
     M=D
@@ -78,29 +91,32 @@ M=D
     @BASE
     D=M
     @J
-    A=D+M
-    A=A+1
-
+    A=D+M+1
     @R6
     D=M
     M=D
 
+    @1
+    D=A
     @SWAPFLAG
-    M=-1
+    M=D
 
 (NOSWAP)
     @J
     M=M+1
-    @INNER
+    @INNER_LOOP
     0;JMP
 
 (ENDINNER)
-    @LIMIT
-    M=M-1
     @SWAPFLAG
     D=M
-    @OUTER
-    D;JNE
+    @DONE
+    D;JEQ
+
+    @I
+    M=M+1
+    @OUTER_LOOP
+    0;JMP
 
 (DONE)
     @R0
@@ -108,11 +124,12 @@ M=D
     @END
     0;JMP
 
-(BASE)       @0
-(LIMIT)      @0
-(J)          @0
-(R6)         @0
-(R7)         @0
-(SWAPFLAG)   @0
-(TMP)        @0
-(END)        @END
+(BASE)      @0
+(LEN)       @0
+(I)         @0
+(J)         @0
+(R6)        @0
+(R7)        @0
+(ONE)       @1
+(SWAPFLAG)  @0
+(END)       @END
