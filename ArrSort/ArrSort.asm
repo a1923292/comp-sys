@@ -7,6 +7,10 @@ D=M
 @SKIP_SORT
 D;JEQ
 
+@0
+D=A
+M=D
+
 @R1
 D=M
 @BASE
@@ -17,20 +21,13 @@ D=M
 @LEN
 M=D
 
-@LEN
-D=M
-@ONE
-D=D-A
-@LIMIT
-M=D
-
 @0
 D=A
 @I
 M=D
 
 (OUTER_LOOP)
-    @LIMIT
+    @LEN
     D=M
     @I
     D=D-M
@@ -41,19 +38,17 @@ M=D
     D=A
     @J
     M=D
-    @0
-    D=A
-    @SWAPFLAG
-    M=D
 
 (INNER_LOOP)
-    @LIMIT
+    @LEN
     D=M
     @I
     D=D-M
+    @ONE
+    D=D-1
     @J
     D=D-M
-    @NO_INNER
+    @END_INNER
     D;JLE
 
     @BASE
@@ -70,11 +65,10 @@ M=D
     M=D
 
     @ADDR
-    D=M
-    @ONE
-    D=D+A
+    D=M+1
     @ADDR1
     M=D
+
     @ADDR1
     A=M
     D=M
@@ -88,7 +82,6 @@ M=D
     @NO_SWAP
     D;JLE
 
-(SWAP)
     @R6
     D=M
     @ADDR1
@@ -101,23 +94,13 @@ M=D
     A=M
     M=D
 
-    @1
-    D=A
-    @SWAPFLAG
-    M=D
-
 (NO_SWAP)
     @J
     M=M+1
     @INNER_LOOP
     0;JMP
 
-(NO_INNER)
-    @SWAPFLAG
-    D=M
-    @DONE
-    D;JEQ
-
+(END_INNER)
     @I
     M=M+1
     @OUTER_LOOP
@@ -131,15 +114,23 @@ M=D
     @END
     0;JMP
 
-(BASE)      @0
-(LEN)       @0
-(I)         @0
-(J)         @0
-(ADDR)      @0
-(ADDR1)     @0
-(R6)        @0
-(R7)        @0
-(ONE)       @1
-(LIMIT)     @0
-(SWAPFLAG)  @0
-(END)       @END
+(BASE)  
+@0
+(LEN)   
+@0
+(I)     
+@0
+(J)     
+@0
+(ADDR)  
+@0
+(ADDR1) 
+@0
+(R6)    
+@0
+(R7)    
+@0
+(ONE)   
+@1
+(END)   
+@END
