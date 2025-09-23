@@ -1,27 +1,19 @@
-@0
-D=A
-M=D
 
-@R1
-D=M
-@BASE
-M=D
+@R1   D=M      
+@BASE M=D
+@R2   D=M
+@LEN  M=D
+@LEN  D=M
+@LIMIT M=D     
+@0    D=A
+@SWAPFLAG 
+M=D  
 
-@R2
-D=M
-@LEN
-M=D
-
-@0
-D=A
-@I
-M=D
-
-(OUTER_LOOP)
-    @LEN
+(OUTER)
+    @LIMIT
     D=M
-    @I
-    D=D-M
+    @1
+    D=D-1
     @DONE
     D;JLE
 
@@ -29,39 +21,32 @@ M=D
     D=A
     @J
     M=D
+    @0
+    D=A
+    @SWAPFLAG
+    M=D 
 
-(INNER_LOOP)
-    @LEN
-    D=M
-    @I
-    D=D-M
-    @ONE
-    D=D-1
+(INNER)
     @J
+    D=M
+    @LIMIT
     D=D-M
-    @END_INNER
-    D;JLE
+    @ENDINNER
+    D;JGE
 
     @BASE
     D=M
     @J
-    D=D+M
-    @ADDR
-    M=D
-
-    @ADDR
-    A=M
+    A=D+M
     D=M
     @R6
     M=D
 
-    @ADDR
-    D=M+1
-    @ADDR1
-    M=D
-
-    @ADDR1
-    A=M
+    @BASE
+    D=M
+    @J
+    A=D+M
+    A=A+1
     D=M
     @R7
     M=D
@@ -69,58 +54,57 @@ M=D
     @R6
     D=M
     @R7
-    D=D-M
-    @NO_SWAP
-    D;JLE
+    D=M-D
+    @NOSWAP
+    D;JGT
 
     @R6
     D=M
-    @ADDR1
-    A=M
+    @BASE
+    D=M
+    @J
+    A=D+M
     M=D
 
     @R7
     D=M
-    @ADDR
-    A=M
+    @BASE
+    D=M
+    @J
+    A=D+M
+    A=A+1
     M=D
 
-(NO_SWAP)
+    @SWAPFLAG
+    M=-1
+
+(NOSWAP)
     @J
     M=M+1
-    @INNER_LOOP
+    @INNER
     0;JMP
 
-(END_INNER)
-    @I
-    M=M+1
-    @OUTER_LOOP
+(ENDINNER)
+    @LIMIT
+    M=M-1
+    @SWAPFLAG
+    D=M
+    @OUTER
+    D;JNE
+    @DONE
     0;JMP
 
 (DONE)
     @R0
     M=-1
-
     @END
     0;JMP
 
-(BASE)  
-@0
-(LEN)   
-@0
-(I)     
-@0
-(J)     
-@0
-(ADDR)  
-@0
-(ADDR1) 
-@0
-(R6)    
-@0
-(R7)    
-@0
-(ONE)   
-@1
-(END)   
-@END
+(BASE)   @0
+(LEN)    @0
+(LIMIT)  @0
+(J)      @0
+(R6)     @0
+(R7)     @0
+(SWAPFLAG) @0
+(END)    @END

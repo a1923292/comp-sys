@@ -50,9 +50,23 @@ D=M
 
 // compare with current minimum 
 @R5
-D=D-M
+D=M
+@TMP
+M=D
+@R6
+D=M
+@R4
+A=D+M
+D=M
+@CUR
+M=D
+
+@TMP
+D=M
+@CUR
+D=M-D
 @CONTINUE
-D;JGE     // if M[base + i] >= R5 don't update.
+D;JGE
 
 // update minimum
 @R6
@@ -76,3 +90,6 @@ D=M
 M=D
 @DONE
 0;JMP
+
+(TMP)   @0
+(CUR)   @0
