@@ -1,15 +1,30 @@
-// Calculates a = x*y
+// Calculates a = x * y
 // a is a local variable
 // x & y are static variables
 
-// Put your code here.
-
-// Initialize result = 0
+// result = 0
 push constant 0
 pop local 0
 
+// check if x < 0
+push static 0
+push constant 0
+lt
+if-goto XNEG
+
+goto LOOP_SETUP
+
+// if x is negative, negate x and y
+label XNEG
+push static 0
+neg
+pop static 0
+push static 1
+neg
+pop static 1
+
+label LOOP_SETUP
 label LOOP
-// if x == 0, end
 push static 0
 push constant 0
 eq
@@ -30,7 +45,5 @@ pop static 0
 goto LOOP
 
 label ENDLOOP
-goto END
-
-label END
-goto END
+push local 0
+return
