@@ -2,33 +2,68 @@
 // a is a local variable
 // x & y are static variables
 
-// result = 0
+// a = 0
 push constant 0
 pop local 0
 
-// check if x < 0
-push static 0
-push constant 0
-lt
-if-goto XNEG
-
-goto LOOP_SETUP
-
-// if x is negative, negate x and y
-label XNEG
-push static 0
-neg
-pop static 0
-push static 1
-neg
-pop static 1
-
-label LOOP_SETUP
-label LOOP
+// if x == 0 or y == 0, result = 0 then END
 push static 0
 push constant 0
 eq
-if-goto ENDLOOP
+if-goto END
+push static 1
+push constant 0
+eq
+if-goto END
+
+// temp 0 holds sign flag (0 = positive, 1 = negative)
+push constant 0
+pop temp 0          
+
+// if x < 0, make it positive and set sign flag = 1
+push static 0
+push constant 0
+lt
+if-goto X_NEG
+goto Y_SIGNCHECK
+
+label X_NEG
+push static 0
+neg
+pop static 0
+push constant 1
+pop temp 0
+
+// if y < 0, make it positive and flip sign flag
+label Y_SIGNCHECK
+push static 1
+push constant 0
+lt
+if-goto Y_NEG
+goto MULT_LOOP
+
+label Y_NEG
+push static 1
+neg
+pop static 1
+// flip sign flag if it was already 1 (two negatives = positive)
+push temp 0
+push constant 1
+eq
+if-goto SIGN_RESET
+push constant 1
+pop temp 0
+goto MULT_LOOP
+
+label SIGN_RESET
+push constant 0
+pop temp 0
+
+label MULT_LOOP
+push static 0
+push constant 0
+eq
+if-goto AFTER_MULT
 
 // a = a + y
 push local 0
@@ -42,8 +77,19 @@ push constant 1
 sub
 pop static 0
 
-goto LOOP
+goto MULT_LOOP
 
-label ENDLOOP
+label AFTER_MULT
+push temp 0
+push constant 1
+eq
+if-goto NEGATE_RESULT
+goto END
+
+label NEGATE_RESULT
 push local 0
-return
+neg
+pop local 0
+
+label END
+goto END
