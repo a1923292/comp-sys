@@ -1,0 +1,54 @@
+// Contains a function ArrMax.arrMax that finds and returns the largest element in the array a of length b.
+// a & b are both supplied as arguments
+
+// Put your code here.
+
+// i = 0
+push constant 0
+pop local 0
+
+// that = m
+push argument 0
+pop pointer 1
+
+// max = that[0]
+push that 0
+pop local 1
+
+label LOOP
+// if i >= n, END
+push local 0
+push argument 1
+lt
+not
+if-goto END
+
+// that = m + i
+push argument 0
+push local 0
+add
+pop pointer 1
+
+// if that[0] > max, update max
+push that 0
+push local 1
+gt
+if-goto UPDATE
+goto CONTINUE
+
+label UPDATE
+push that 0
+pop local 1
+
+label CONTINUE
+// i = i + 1
+push local 0
+push constant 1
+add
+pop local 0
+
+goto LOOP
+
+label END
+push local 1
+return

@@ -1,0 +1,36 @@
+// Calculates a = x*y
+// a is a local variable
+// x & y are static variables
+
+// Put your code here.
+
+// Initialize result = 0
+push constant 0
+pop local 0
+
+label LOOP
+// if x == 0, end
+push static 0
+push constant 0
+eq
+if-goto ENDLOOP
+
+// a = a + y
+push local 0
+push static 1
+add
+pop local 0
+
+// x = x - 1
+push static 0
+push constant 1
+sub
+pop static 0
+
+goto LOOP
+
+label ENDLOOP
+goto END
+
+label END
+goto END
