@@ -3,52 +3,63 @@
 
 // Put your code here.
 
-// i = 0
-push constant 0
-pop local 0
+function ArrMax.arrMax 0
 
-// that = m
+// store array base address in THAT
 push argument 0
 pop pointer 1
 
-// max = that[0]
-push that 0
-pop local 1
+// loop index i = 0
+push constant 0
+pop local 0 // local 0 = i
 
-label LOOP
-// if i >= n, END
+// Initialize max = first element (that[0])
+push that 0
+pop local 1            // local 1 = max
+
+// i = 1
+push constant 1
+pop local 0
+
+label LOOP_START
+
+// if i >= n, end loop
 push local 0
 push argument 1
-lt
-not
-if-goto END
+gt
+if-goto LOOP_END
 
-// that = m + i
-push argument 0
+// get current element, that[i]
+push pointer 1
 push local 0
 add
 pop pointer 1
-
-// if that[0] > max, update max
 push that 0
-push local 1
-gt
-if-goto UPDATE
-goto CONTINUE
 
-label UPDATE
+// if arr[i] < max, skip updating max
+push local 1
+lt                     
+if-goto SKIP_UPDATE
+
+// max = arr[i]
+push pointer 1
 push that 0
 pop local 1
 
-label CONTINUE
-// i = i + 1
+label SKIP_UPDATE
+
+push argument 0
+pop pointer 1
+
+// i++
 push local 0
 push constant 1
 add
 pop local 0
 
-goto LOOP
+goto LOOP_START
 
-label END
+label LOOP_END
+
 push local 1
 return
