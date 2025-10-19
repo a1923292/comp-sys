@@ -1,0 +1,17 @@
+push constant 10
+pop local 0
+
+push constant 20
+pop argument 1
+
+push constant 30
+pop temp 6
+
+push constant 2050
+pop pointer 1 
+
+push constant 50
+pop static 0
+
+label End
+goto End

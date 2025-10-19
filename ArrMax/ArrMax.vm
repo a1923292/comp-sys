@@ -1,54 +1,51 @@
-// Contains a function ArrMax.arrMax that finds and returns the largest element in the array a of length b. 
-// a & b are both supplied as arguments 
+// Contains a function ArrMax.arrMax that finds and returns the largest element in the array a of length b.
+// a & b are both supplied as arguments
 
 // Put your code here.
-
+// Function ArrMax.arrMax: returns the largest value in the array
 function ArrMax.arrMax 2
-// local 0 = index i
-// local 1 = current max
+// local 0 = i (index)
+// local 1 = max (current max)
 
-// base of THAT = m
+push constant 0
+pop local 0      // i = 0
+
+// Set pointer 1 to argument[0] so that THAT points to base of array
 push argument 0
-pop pointer 1 // that = array base address
+pop pointer 1
 
-// initialise max = that[0]
+// max = that[0]
 push that 0
 pop local 1
 
-// initialize i = 1
-push constant 1
-pop local 0
-
 label LOOP_START
-// if i >= n, end loop
+
+// if i >= argument[1] goto END
 push local 0
 push argument 1
-ge
+lt
+not
 if-goto LOOP_END
 
+// pointer 1 = argument[0] + i
 push argument 0
 push local 0
 add
 pop pointer 1
-push that 0
 
-// that[i] > max ?
+// if that[0] > max: max = that[0]
+push that 0
 push local 1
 gt
-if-goto UPDATE_MAX
+if-goto SET_MAX
+goto CONTINUE
 
-goto CONTINUE_LOOP
-
-label UPDATE_MAX
-// update max = that[i]
+label SET_MAX
 push that 0
 pop local 1
 
-label CONTINUE_LOOP
-push argument 0
-pop pointer 1
-
-// i++
+label CONTINUE
+// i = i + 1
 push local 0
 push constant 1
 add
@@ -57,5 +54,6 @@ pop local 0
 goto LOOP_START
 
 label LOOP_END
+// return max
 push local 1
 return

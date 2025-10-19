@@ -1,0 +1,5 @@
+call ConstantReturner 0
+
+function ConstantReturner 0
+push constant 999
+return

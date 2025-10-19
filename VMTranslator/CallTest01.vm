@@ -1,0 +1,5 @@
+call SimpleFunction.noLocals 0
+function SimpleFunction.noLocals 0
+push constant 111
+label END
+goto END

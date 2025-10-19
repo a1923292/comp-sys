@@ -1,0 +1,8 @@
+push constant 0     
+if-goto LABEL
+push constant 42    
+label LABEL
+push constant 3    
+
+label END
+goto END

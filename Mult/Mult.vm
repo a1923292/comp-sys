@@ -1,88 +1,101 @@
-// Calculates a = x * y
+// Calculates a = x*y
 // a is a local variable
 // x & y are static variables
 
-// a = 0
-push constant 0
-pop local 0
+// Put your code here.
 
-// if x == 0 or y == 0, result = 0 then END
-push static 0
-push constant 0
-eq
-if-goto END
-push static 1
-push constant 0
-eq
-if-goto END
+// Load x and y
+push static 0     // push x
+push static 1     // push y
 
-// temp 0 holds sign flag (0 = positive, 1 = negative)
-push constant 0
-pop temp 0          
+// Store them in temp 0 and temp 1
+pop temp 0        // temp 0 = x
+pop temp 1        // temp 1 = y
 
-// if x < 0, make it positive and set sign flag = 1
-push static 0
+// Initialize sign = 0 (false)
+push constant 0
+pop temp 2        // temp 2 = sign
+
+// Check if x < 0
+push temp 0
 push constant 0
 lt
 if-goto X_NEG
-goto Y_SIGNCHECK
+goto CHECK_Y
 
 label X_NEG
-push static 0
+// sign = !sign
+push temp 2
+not
+pop temp 2
+// x = -x
+push temp 0
 neg
-pop static 0
-push constant 1
 pop temp 0
 
-// if y < 0, make it positive and flip sign flag
-label Y_SIGNCHECK
-push static 1
+label CHECK_Y
+// Check if y < 0
+push temp 1
 push constant 0
 lt
 if-goto Y_NEG
-goto MULT_LOOP
+goto SWAP_IF_NEEDED
 
 label Y_NEG
-push static 1
+// sign = !sign
+push temp 2
+not
+pop temp 2
+// y = -y
+push temp 1
 neg
-pop static 1
-// flip sign flag if it was already 1 (two negatives = positive)
+pop temp 1
+
+label SWAP_IF_NEEDED
+// if x < y, swap temp 0 and temp 1
 push temp 0
-push constant 1
-eq
-if-goto SIGN_RESET
-push constant 1
-pop temp 0
-goto MULT_LOOP
+push temp 1
+lt
+if-goto DO_SWAP
+goto LOOP_START
 
-label SIGN_RESET
+label DO_SWAP
+push temp 0
+pop temp 3        // temp 3 = x
+push temp 1
+pop temp 0        // x = y
+push temp 3
+pop temp 1        // y = x
+
+label LOOP_START
+// R0 = 0
 push constant 0
-pop temp 0
+pop local 0
 
-label MULT_LOOP
-push static 0
+// Use temp 1 as loop counter
+label LOOP
+push temp 1
 push constant 0
 eq
-if-goto AFTER_MULT
+if-goto END_LOOP
 
-// a = a + y
+// local 0 += temp 0
 push local 0
-push static 1
+push temp 0
 add
 pop local 0
 
-// x = x - 1
-push static 0
+// temp 1 -= 1
+push temp 1
 push constant 1
 sub
-pop static 0
+pop temp 1
 
-goto MULT_LOOP
+goto LOOP
 
-label AFTER_MULT
-push temp 0
-push constant 1
-eq
+label END_LOOP
+// If sign is true, negate result
+push temp 2
 if-goto NEGATE_RESULT
 goto END
 

@@ -1,0 +1,7 @@
+push constant 1    
+if-goto TARGET     // Should jump to TARGET
+push constant 0    // Should be skipped
+label TARGET       
+push constant 99   
+label END
+goto END

@@ -1,0 +1,6 @@
+label START
+push constant 1
+push constant 2
+goto START   //(used to check looping behavior)
+label END
+goto END

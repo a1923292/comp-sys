@@ -1,0 +1,13 @@
+push constant 21
+push constant 21
+call AddTwo 2
+
+function AddTwo 0
+pop argument 1
+pop argument 0
+push argument 0
+push argument 1
+add
+return
+label END
+goto END

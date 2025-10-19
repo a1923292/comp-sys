@@ -1,0 +1,9 @@
+push constant 1
+push temp 2
+push this 0 
+push that 1 
+push pointer 1
+push static 0
+
+label End
+goto End

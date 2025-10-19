@@ -1,0 +1,4 @@
+function SimpleFunction.noLocals 0
+push constant 42
+label END
+goto END

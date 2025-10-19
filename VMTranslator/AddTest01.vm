@@ -1,0 +1,14 @@
+push constant 7
+push constant 5
+add       
+
+push constant -4
+push constant 6
+add       
+
+push constant 0
+push constant 99
+add       // Stack: 12, 2, 99
+
+label END
+goto END
