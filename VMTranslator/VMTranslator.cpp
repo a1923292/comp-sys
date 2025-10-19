@@ -1,8 +1,11 @@
 #include <string>
+#include <sstream>
 
 #include "VMTranslator.h"
 
 using namespace std;
+
+static int label_counter = 0;
 
 /**
  * VMTranslator constructor
@@ -74,58 +77,183 @@ string VMTranslator::vm_not(){
 }
 
 /** Generate Hack Assembly code for a VM label operation */
-string VMTranslator::vm_label(string label) {
-    return "(" + label + ")\n";
+string VMTranslator::vm_label(string label){
+    stringstream ss;
+    ss << "(" << label << ")\n";
+    return ss.str();
 }
 
 /** Generate Hack Assembly code for a VM goto operation */
-string VMTranslator::vm_goto(string label) {
-    return "@" + label + "\n0;JMP\n";
+string VMTranslator::vm_goto(string label){
+    stringstream ss;
+    ss << "@" << label << "\n";
+    ss << "0;JMP\n";
+    return ss.str();
 }
 
 /** Generate Hack Assembly code for a VM if-goto operation */
-string VMTranslator::vm_if(string label) {
-    return "@SP\nAM=M-1\nD=M\n@" + label + "\nD;JNE\n";
+string VMTranslator::vm_if(string label){
+    stringstream ss;
+    ss << "@SP\n";
+    ss << "M=M-1\n";
+    ss << "A=M\n";
+    ss << "D=M\n";
+    ss << "@" << label << "\n";
+    ss << "D;JNE\n";
+    return ss.str();
 }
 
 /** Generate Hack Assembly code for a VM function operation */
-string VMTranslator::vm_function(string function_name, int n_vars) {
-    string asm_code = "(" + function_name + ")\n";
-    for (int i = 0; i < n_vars; i++) {
-        asm_code += "@0\nD=A\n@SP\nA=M\nM=D\n@SP\nM=M+1\n";
+string VMTranslator::vm_function(string function_name, int n_vars){
+    stringstream ss;
+    ss << "(" << function_name << ")\n";
+    
+    for(int i = 0; i < n_vars; i++){
+        ss << "@SP\n";
+        ss << "A=M\n";
+        ss << "M=0\n";
+        ss << "@SP\n";
+        ss << "M=M+1\n";
     }
-    return asm_code;
+    
+    return ss.str();
 }
 
 /** Generate Hack Assembly code for a VM call operation */
-int call_counter = 0;
-
-string VMTranslator::vm_call(string function_name, int n_args) {
-    string return_label = "RET_LABEL_" + to_string(call_counter++);
-    string asm_code;
-    asm_code += "@" + return_label + "\nD=A\n@SP\nA=M\nM=D\n@SP\nM=M+1\n";
-    string segments[] = {"LCL", "ARG", "THIS", "THAT"};
-    for (auto seg : segments) {
-        asm_code += "@" + seg + "\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n";
+string VMTranslator::vm_call(string function_name, int n_args){
+    stringstream ss;
+    
+    string safe_function_name = function_name;
+    for(size_t i = 0; i < safe_function_name.length(); i++){
+        if(safe_function_name[i] == '.') safe_function_name[i] = '_';
     }
-    asm_code += "@SP\nD=M\n@" + to_string(n_args + 5) + "\nD=D-A\n@ARG\nM=D\n";
-    asm_code += "@SP\nD=M\n@LCL\nM=D\n";
-    asm_code += "@" + function_name + "\n0;JMP\n";
-    asm_code += "(" + return_label + ")\n";
-    return asm_code;
+    string return_label = "RETURN_" + safe_function_name + "_" + to_string(label_counter++);
+
+    ss << "@" << return_label << "\n";
+    ss << "D=A\n";
+    ss << "@SP\n";
+    ss << "A=M\n";
+    ss << "M=D\n";
+    ss << "@SP\n";
+    ss << "M=M+1\n";
+    
+    ss << "@LCL\n";
+    ss << "D=M\n";
+    ss << "@SP\n";
+    ss << "A=M\n";
+    ss << "M=D\n";
+    ss << "@SP\n";
+    ss << "M=M+1\n";
+    
+    ss << "@ARG\n";
+    ss << "D=M\n";
+    ss << "@SP\n";
+    ss << "A=M\n";
+    ss << "M=D\n";
+    ss << "@SP\n";
+    ss << "M=M+1\n";
+    
+    ss << "@THIS\n";
+    ss << "D=M\n";
+    ss << "@SP\n";
+    ss << "A=M\n";
+    ss << "M=D\n";
+    ss << "@SP\n";
+    ss << "M=M+1\n";
+    
+    ss << "@THAT\n";
+    ss << "D=M\n";
+    ss << "@SP\n";
+    ss << "A=M\n";
+    ss << "M=D\n";
+    ss << "@SP\n";
+    ss << "M=M+1\n";
+    
+    ss << "@SP\n";
+    ss << "D=M\n";
+    ss << "@" << n_args << "\n";
+    ss << "D=D-A\n";
+    ss << "@5\n";
+    ss << "D=D-A\n";
+    ss << "@ARG\n";
+    ss << "M=D\n";
+    
+    ss << "@SP\n";
+    ss << "D=M\n";
+    ss << "@LCL\n";
+    ss << "M=D\n";
+    
+    ss << "@" << function_name << "\n";
+    ss << "0;JMP\n";
+    
+    ss << "(" << return_label << ")\n";
+    
+    return ss.str();
 }
 
 /** Generate Hack Assembly code for a VM return operation */
-string VMTranslator::vm_return() {
-    string asm_code;
-    asm_code += "@LCL\nD=M\n@R13\nM=D\n";
-    asm_code += "@5\nA=D-A\nD=M\n@R14\nM=D\n";
-    asm_code += "@SP\nAM=M-1\nD=M\n@ARG\nA=M\nM=D\n";
-    asm_code += "@ARG\nD=M+1\n@SP\nM=D\n";
-    string segments[] = {"THAT", "THIS", "ARG", "LCL"};
-    for (int i = 0; i < 4; i++) {
-        asm_code += "@R13\nD=M\n@" + to_string(i+1) + "\nA=D-A\nD=M\n@" + segments[3-i] + "\nM=D\n";
-    }
-    asm_code += "@R14\nA=M\n0;JMP\n";
-    return asm_code;
+string VMTranslator::vm_return(){
+    stringstream ss;
+    
+    ss << "@LCL\n";
+    ss << "D=M\n";
+    ss << "@R13\n";
+    ss << "M=D\n";
+    
+    ss << "@5\n";
+    ss << "A=D-A\n";
+    ss << "D=M\n";
+    ss << "@R14\n";
+    ss << "M=D\n";
+    
+    ss << "@SP\n";
+    ss << "M=M-1\n";
+    ss << "A=M\n";
+    ss << "D=M\n";
+    ss << "@ARG\n";
+    ss << "A=M\n";
+    ss << "M=D\n";
+    
+    ss << "@ARG\n";
+    ss << "D=M+1\n";
+    ss << "@SP\n";
+    ss << "M=D\n";
+    
+    ss << "@R13\n";
+    ss << "D=M\n";
+    ss << "@1\n";
+    ss << "A=D-A\n";
+    ss << "D=M\n";
+    ss << "@THAT\n";
+    ss << "M=D\n";
+    
+    ss << "@R13\n";
+    ss << "D=M\n";
+    ss << "@2\n";
+    ss << "A=D-A\n";
+    ss << "D=M\n";
+    ss << "@THIS\n";
+    ss << "M=D\n";
+    
+    ss << "@R13\n";
+    ss << "D=M\n";
+    ss << "@3\n";
+    ss << "A=D-A\n";
+    ss << "D=M\n";
+    ss << "@ARG\n";
+    ss << "M=D\n";
+    
+    ss << "@R13\n";
+    ss << "D=M\n";
+    ss << "@4\n";
+    ss << "A=D-A\n";
+    ss << "D=M\n";
+    ss << "@LCL\n";
+    ss << "M=D\n";
+    
+    ss << "@R14\n";
+    ss << "A=M\n";
+    ss << "0;JMP\n";
+    
+    return ss.str();
 }
